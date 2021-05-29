@@ -1,0 +1,33 @@
+<h1 id="tableLabel">To Do Tasks</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+<p *ngIf="!toDoTasks"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="toDoTasks">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Added at</th>
+      <th>Deadline</th>
+      <th>Importance</th>
+      <th>Status</th>
+      <th>Closed At</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let toDoTask of toDoTasks">
+      <td>{{ toDoTask.id }}</td>
+      <td>{{ toDoTask.title }}</td>
+      <td>{{ toDoTask.description }}</td>
+      <td>{{ toDoTask.addedAt }}</td>
+      <td>{{ toDoTask.deadline }}</td>
+      <td>{{ toDoTask.importance }}</td>
+      <td>{{ toDoTask.status }}</td>
+      <td>{{ toDoTask.closedAt }}</td>
+    </tr>
+  </tbody>
+</table>
+

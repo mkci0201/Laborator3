@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Laborator3.Data;
 using Laborator3.Models;
+using Laborator3.ViewModels;
 
 namespace Laborator3.Controllers
 {
@@ -43,16 +44,29 @@ namespace Laborator3.Controllers
 
         // GET: api/ToDoTasks/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ToDoTask>> GetToDoTask(int id)
+        public async Task<ActionResult<ToDoTaskViewModel>> GetToDoTask(int id)
         {
             var toDoTask = await _context.toDoTasks.FindAsync(id);
+            var toDoTaskViewModel = new ToDoTaskViewModel
+            {
+            
+            Id = toDoTask.Id,
+            Title = toDoTask.Title,
+            Description = toDoTask.Description,
+            AddedAt = toDoTask.AddedAt,
+            DeadLine = toDoTask.DeadLine,
+            Importance = toDoTask.Importance,
+            Status  =toDoTask.Status,
+            ClosedAt = toDoTask.ClosedAt
+
+            };
 
             if (toDoTask == null)
             {
                 return NotFound();
             }
 
-            return toDoTask;
+            return toDoTaskViewModel;
         }
 
         // GET: api/ToDoTasks/fromDate/toDate

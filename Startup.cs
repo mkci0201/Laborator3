@@ -32,6 +32,9 @@ namespace Laborator3
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+            services.AddAutoMapper(typeof(Startup));
+            services.AddControllersWithViews();
+
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
