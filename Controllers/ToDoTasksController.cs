@@ -25,6 +25,9 @@ namespace Laborator3.Controllers
             _mapper = mapper;
         }
 
+        ///<summary>
+        ///Return all ToDoTask elements from Database
+        ///</summary>
         // GET: api/ToDoTasks
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ToDoTaskViewModel>>> GettoDoTasks()
@@ -34,6 +37,9 @@ namespace Laborator3.Controllers
            return _mapper.Map<List<ToDoTask>, List<ToDoTaskViewModel>>(toDoTasks);
         }
 
+        ///<summary>
+        ///Return all existing comments from one ToDotask Object
+        ///</summary>
         // GET: api/ToDoTasks/5/comments
         [HttpGet("{id}/Comments")]
         public ActionResult<ToDoTaskWithCommentsViewModel> GetCommentsForToDoTask(int id)
@@ -43,6 +49,9 @@ namespace Laborator3.Controllers
             return query.ToList()[0];
         }
 
+        ///<summary>
+        ///Return one ToDotask Object
+        ///</summary>
         // GET: api/ToDoTasks/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ToDoTaskViewModel>> GetToDoTask(int id)
@@ -57,6 +66,9 @@ namespace Laborator3.Controllers
             return _mapper.Map<ToDoTask, ToDoTaskViewModel>(toDoTask);
         }
 
+        ///<summary>
+        ///Filter ToDotask Objects using a range of Dates
+        ///</summary>
         // GET: api/ToDoTasks/fromDate/toDate
         [HttpGet]
         [Route("filter/{FromDate}/{ToDate}")]
@@ -71,6 +83,9 @@ namespace Laborator3.Controllers
             return _mapper.Map<List<ToDoTask>, List<ToDoTaskViewModel>>(await _context.toDoTasks.Where(p => p.DeadLine >= FromDate && p.DeadLine <= ToDate).ToListAsync());
         }
 
+        ///<summary>
+        ///Update one ToDotask Object
+        ///</summary>
         // PUT: api/ToDoTasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -104,6 +119,9 @@ namespace Laborator3.Controllers
             return Ok();
         }
 
+        ///<summary>
+        ///Add a new ToDotask Object
+        ///</summary>
         // POST: api/ToDoTasks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -116,6 +134,9 @@ namespace Laborator3.Controllers
             return CreatedAtAction("GetToDoTask", new { id = toDoTask.Id }, toDoTask);
         }
 
+        ///<summary>
+        ///Add a new Comment to a toDoTask Object
+        ///</summary>
         //POST: api/ToDoTask/5/Comment
         [HttpPost("{id}/Comments")]
         public async Task<IActionResult> PostCommentForToDoTask(int id, CommentViewModel commentRequest)
@@ -133,8 +154,11 @@ namespace Laborator3.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
-        } 
+        }
 
+        ///<summary>
+        ///Delete a toDoTask Object
+        ///</summary>
         // DELETE: api/ToDoTasks/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteToDoTask(int id)
