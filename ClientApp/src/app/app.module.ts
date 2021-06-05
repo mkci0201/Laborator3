@@ -12,7 +12,7 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
 import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
-import { ToDoTasksComponent } from './to-do-tasks/to-do-tasks.component';
+import { ToDoTasksListComponent } from './to-do-tasks/to-do-tasks-list/to-do-tasks-list.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,7 @@ import { ToDoTasksComponent } from './to-do-tasks/to-do-tasks.component';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    ToDoTasksComponent
+    ToDoTasksListComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -32,7 +32,8 @@ import { ToDoTasksComponent } from './to-do-tasks/to-do-tasks.component';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },
-      { path: 'to-do-tasks', component: ToDoTasksComponent}
+      { path: 'to-do-tasks', component: ToDoTasksListComponent },
+      { path: 'to-do-tasks/id', component: ToDoTasksListComponent }
     ])
   ],
   providers: [

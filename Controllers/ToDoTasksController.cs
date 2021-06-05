@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Laborator3.Data;
 using Laborator3.Models;
 using Laborator3.ViewModels;
+using AutoMapper;
 
 namespace Laborator3.Controllers
 {
@@ -16,30 +17,30 @@ namespace Laborator3.Controllers
     public class ToDoTasksController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ToDoTasksController(ApplicationDbContext context)
+        public ToDoTasksController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/ToDoTasks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ToDoTask>>> GettoDoTasks()
+        public async Task<ActionResult<IEnumerable<ToDoTaskViewModel>>> GettoDoTasks()
         {
-            return await _context.toDoTasks.ToListAsync();
+           var toDoTasks = await _context.toDoTasks.ToListAsync();
+               
+           return _mapper.Map<List<ToDoTask>, List<ToDoTaskViewModel>>(toDoTasks);
         }
 
         // GET: api/ToDoTasks/5/comments
         [HttpGet("{id}/Comments")]
-        public ActionResult<IEnumerable<Object>> GetCommentsForToDoTask(int id)
+        public ActionResult<ToDoTaskWithCommentsViewModel> GetCommentsForToDoTask(int id)
         {
-            var query =  _context.Comments.Where(c => c.ToDoTask.Id == id).Include(c => c.ToDoTask).Select(c => new
-            {
-                ToDoTask = c.ToDoTask.Title,
-                Comment = c.Content
-            });
+            var query = _context.toDoTasks.Where(t => t.Id == id).Include(t => t.Comments).Select(t => _mapper.Map<ToDoTaskWithCommentsViewModel>(t));
 
-            return query.ToList();
+            return query.ToList()[0];
         }
 
         // GET: api/ToDoTasks/5
@@ -47,51 +48,40 @@ namespace Laborator3.Controllers
         public async Task<ActionResult<ToDoTaskViewModel>> GetToDoTask(int id)
         {
             var toDoTask = await _context.toDoTasks.FindAsync(id);
-            var toDoTaskViewModel = new ToDoTaskViewModel
-            {
-            
-            Id = toDoTask.Id,
-            Title = toDoTask.Title,
-            Description = toDoTask.Description,
-            AddedAt = toDoTask.AddedAt,
-            DeadLine = toDoTask.DeadLine,
-            Importance = toDoTask.Importance,
-            Status  =toDoTask.Status,
-            ClosedAt = toDoTask.ClosedAt
-
-            };
 
             if (toDoTask == null)
             {
                 return NotFound();
             }
-
-            return toDoTaskViewModel;
+                     
+            return _mapper.Map<ToDoTask, ToDoTaskViewModel>(toDoTask);
         }
 
         // GET: api/ToDoTasks/fromDate/toDate
         [HttpGet]
-        [Route ("filter/{FromDate}/{ToDate}")]
-        public async Task<ActionResult<IEnumerable<ToDoTask>>> FilterToDoTaskOnDeadline(DateTime? FromDate, DateTime? ToDate)
+        [Route("filter/{FromDate}/{ToDate}")]
+        public async Task<ActionResult<IEnumerable<ToDoTaskViewModel>>> FilterToDoTaskOnDeadline(DateTime? FromDate, DateTime? ToDate)
         {
             if (FromDate == null || ToDate == null)
             {
 
-                return await _context.toDoTasks.ToListAsync();
+                return _mapper.Map<List<ToDoTask>, List<ToDoTaskViewModel>>(await _context.toDoTasks.ToListAsync());
 
             }
-            return await _context.toDoTasks.Where(p => p.DeadLine >= FromDate && p.DeadLine <= ToDate).ToListAsync();
+            return _mapper.Map<List<ToDoTask>, List<ToDoTaskViewModel>>(await _context.toDoTasks.Where(p => p.DeadLine >= FromDate && p.DeadLine <= ToDate).ToListAsync());
         }
 
         // PUT: api/ToDoTasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutToDoTask(int id, ToDoTask toDoTask)
+        public async Task<IActionResult> PutToDoTask(int id, ToDoTaskViewModel toDoTaskViewModel)
         {
-            if (id != toDoTask.Id)
+            if (id != toDoTaskViewModel.Id)
             {
                 return BadRequest();
             }
+
+            var toDoTask = _mapper.Map<ToDoTaskViewModel, ToDoTask>(toDoTaskViewModel);
 
             _context.Entry(toDoTask).State = EntityState.Modified;
 
@@ -111,14 +101,15 @@ namespace Laborator3.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         // POST: api/ToDoTasks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ToDoTask>> PostToDoTask(ToDoTask toDoTask)
+        public async Task<ActionResult<ToDoTaskViewModel>> PostToDoTask(ToDoTaskViewModel toDoTaskRequest)
         {
+            ToDoTask toDoTask = _mapper.Map<ToDoTask>(toDoTaskRequest);
             _context.toDoTasks.Add(toDoTask);
             await _context.SaveChangesAsync();
 
@@ -127,23 +118,28 @@ namespace Laborator3.Controllers
 
         //POST: api/ToDoTask/5/Comment
         [HttpPost("{id}/Comments")]
-        public IActionResult PostCommentForToDoTask(int id, Comment comment)
+        public async Task<IActionResult> PostCommentForToDoTask(int id, CommentViewModel commentRequest)
         {
+            Comment comment = _mapper.Map<CommentViewModel, Comment>(commentRequest);
+
             comment.ToDoTask = _context.toDoTasks.Find(id);
+            comment.ToDoTaskId = id;
             if (comment.ToDoTask == null) 
             {
                 return NotFound();
             }
+
             _context.Comments.Add(comment);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok();
-        }
+        } 
 
         // DELETE: api/ToDoTasks/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteToDoTask(int id)
         {
+            
             var toDoTask = await _context.toDoTasks.FindAsync(id);
             if (toDoTask == null)
             {
@@ -153,7 +149,7 @@ namespace Laborator3.Controllers
             _context.toDoTasks.Remove(toDoTask);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         private bool ToDoTaskExists(int id)

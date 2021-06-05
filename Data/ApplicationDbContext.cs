@@ -21,5 +21,15 @@ namespace Laborator3.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ToDoTask>()
+                .HasIndex(t => t.Title)
+                .IsUnique()
+                .HasFilter(null);
+        }
     }
 }

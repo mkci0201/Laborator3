@@ -38,6 +38,12 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\to-do-tasks\to-do-task.model.ts" />
+    <None Remove="ClientApp\src\app\to-do-tasks\to-do-tasks-list\to-do-tasks-list.component.ts" />
+    <None Remove="ClientApp\tsconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="ClientApp\tsconfig.json" />
   </ItemGroup>
 
   <ItemGroup>

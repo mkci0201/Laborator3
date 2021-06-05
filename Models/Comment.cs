@@ -15,6 +15,7 @@ namespace Laborator3.Models
         [Range(0,5)]
         public int Rating { get; set; }
 
+       public int ToDoTaskId { get; set; }
         public ToDoTask ToDoTask { get; set; }
     }
 }

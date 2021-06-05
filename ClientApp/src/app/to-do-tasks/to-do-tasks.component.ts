@@ -1,6 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToDoTask } from './to-do-task.model';
+import { ToDoTasksService } from './to-do-tasks.service';
 
 
 @Component({
@@ -8,17 +9,7 @@ import { ToDoTask } from './to-do-task.model';
   templateUrl: './to-do-tasks.component.html',
   styleUrls: ['./to-do-tasks.component.css']
 })
-export class ToDoTasksComponent implements OnInit {
+export class ToDoTasksComponent {
 
-  public toDoTasks: ToDoTask[];
-
-  constructor(http: HttpClient, @Inject('API_URL') apiUrl: string) {
-    http.get<ToDoTask[]>(apiUrl + 'toDoTask').subscribe(result => {
-      this.toDoTasks = result;
-    }, error => console.error(error));
-  }
-
-  ngOnInit() {
-  }
 
 }
