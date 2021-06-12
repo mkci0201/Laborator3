@@ -15,6 +15,8 @@ namespace Laborator3.Data
         //plays the role of the repository
         public DbSet<ToDoTask> toDoTasks { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Assignment> Assignments { get; set; }
 
         public ApplicationDbContext(
             DbContextOptions options,

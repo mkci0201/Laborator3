@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Laborator3.Models
 {
+  
     public class ApplicationUser : IdentityUser
     {
+
     }
 }

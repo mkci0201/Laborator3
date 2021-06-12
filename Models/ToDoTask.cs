@@ -27,5 +27,7 @@ namespace Laborator3.Models
 
         public List<Comment> Comments { get; set; }
 
+        public List<Assignment> Assignments { get; set; }
+
     }
 }

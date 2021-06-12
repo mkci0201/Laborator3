@@ -4,35 +4,22 @@ using Laborator3.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Laborator3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210610184258_AssignmentInit")]
+    partial class AssignmentInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("AssignmentToDoTask", b =>
-                {
-                    b.Property<int>("AssignmentsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ToDoTasksId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AssignmentsId", "ToDoTasksId");
-
-                    b.HasIndex("ToDoTasksId");
-
-                    b.ToTable("AssignmentToDoTask");
-                });
 
             modelBuilder.Entity("IdentityServer4.EntityFramework.Entities.DeviceFlowCodes", b =>
                 {
@@ -212,12 +199,12 @@ namespace Laborator3.Migrations
                     b.Property<DateTime>("AssignedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("userId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("userId");
 
                     b.ToTable("Assignments");
                 });
@@ -258,6 +245,9 @@ namespace Laborator3.Migrations
                     b.Property<DateTime>("AddedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("AssignmentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ClosedAt")
                         .HasColumnType("datetime2");
 
@@ -277,6 +267,8 @@ namespace Laborator3.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId");
 
                     b.HasIndex("Title")
                         .IsUnique();
@@ -419,28 +411,13 @@ namespace Laborator3.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("AssignmentToDoTask", b =>
-                {
-                    b.HasOne("Laborator3.Models.Assignment", null)
-                        .WithMany()
-                        .HasForeignKey("AssignmentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Laborator3.Models.ToDoTask", null)
-                        .WithMany()
-                        .HasForeignKey("ToDoTasksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Laborator3.Models.Assignment", b =>
                 {
-                    b.HasOne("Laborator3.Models.ApplicationUser", "User")
+                    b.HasOne("Laborator3.Models.ApplicationUser", "user")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("userId");
 
-                    b.Navigation("User");
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Laborator3.Models.Comment", b =>
@@ -452,6 +429,13 @@ namespace Laborator3.Migrations
                         .IsRequired();
 
                     b.Navigation("ToDoTask");
+                });
+
+            modelBuilder.Entity("Laborator3.Models.ToDoTask", b =>
+                {
+                    b.HasOne("Laborator3.Models.Assignment", null)
+                        .WithMany("ToDoTasks")
+                        .HasForeignKey("AssignmentId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -503,6 +487,11 @@ namespace Laborator3.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Laborator3.Models.Assignment", b =>
+                {
+                    b.Navigation("ToDoTasks");
                 });
 
             modelBuilder.Entity("Laborator3.Models.ToDoTask", b =>
