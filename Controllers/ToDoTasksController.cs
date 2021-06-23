@@ -9,9 +9,12 @@ using Laborator3.Data;
 using Laborator3.Models;
 using Laborator3.ViewModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Laborator3.Controllers
-{
+{   
     [Route("api/[controller]")]
     [ApiController]
     public class ToDoTasksController : ControllerBase
@@ -88,6 +91,7 @@ namespace Laborator3.Controllers
         ///</summary>
         // PUT: api/ToDoTasks/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(AuthenticationSchemes = "Identity.Application,Bearer")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutToDoTask(int id, ToDoTaskViewModel toDoTaskViewModel)
         {
@@ -124,6 +128,7 @@ namespace Laborator3.Controllers
         ///</summary>
         // POST: api/ToDoTasks
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[Authorize(AuthenticationSchemes = "Identity.Application,Bearer")]
         [HttpPost]
         public async Task<ActionResult<ToDoTaskViewModel>> PostToDoTask(ToDoTaskViewModel toDoTaskRequest)
         {
@@ -138,6 +143,7 @@ namespace Laborator3.Controllers
         ///Add a new Comment to a toDoTask Object
         ///</summary>
         //POST: api/ToDoTask/5/Comment
+        [Authorize(AuthenticationSchemes = "Identity.Application,Bearer")]
         [HttpPost("{id}/Comments")]
         public async Task<IActionResult> PostCommentForToDoTask(int id, CommentViewModel commentRequest)
         {
@@ -160,6 +166,7 @@ namespace Laborator3.Controllers
         ///Delete a toDoTask Object
         ///</summary>
         // DELETE: api/ToDoTasks/5
+        [Authorize(AuthenticationSchemes = "Identity.Application,Bearer")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteToDoTask(int id)
         {

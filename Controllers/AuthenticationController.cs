@@ -1,6 +1,7 @@
 ﻿using Laborator3.Data;
 using Laborator3.Models;
 using Laborator3.ViewModels.Authentication;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

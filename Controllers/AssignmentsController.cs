@@ -12,6 +12,7 @@ using Laborator3.Models;
 using Laborator3.ViewModels.Assignments;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
 
 namespace Laborator3.Controllers
 {
