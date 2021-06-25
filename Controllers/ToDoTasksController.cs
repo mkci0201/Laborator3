@@ -49,7 +49,14 @@ namespace Laborator3.Controllers
         {
             var query = _context.toDoTasks.Where(t => t.Id == id).Include(t => t.Comments).Select(t => _mapper.Map<ToDoTaskWithCommentsViewModel>(t));
 
-            return query.ToList()[0];
+            if (query.ToList().Count > 0)
+            {
+
+                return query.ToList()[0];
+            }
+            else
+
+                return NotFound();
         }
 
         ///<summary>
@@ -144,7 +151,7 @@ namespace Laborator3.Controllers
         ///</summary>
         //POST: api/ToDoTask/5/Comment
         [Authorize(AuthenticationSchemes = "Identity.Application,Bearer")]
-        [HttpPost("{id}/Comments")]
+        [HttpPost("{id}/Comment")]
         public async Task<IActionResult> PostCommentForToDoTask(int id, CommentViewModel commentRequest)
         {
             Comment comment = _mapper.Map<CommentViewModel, Comment>(commentRequest);
@@ -182,6 +189,28 @@ namespace Laborator3.Controllers
 
             return Ok();
         }
+
+        ///<summary>
+        ///Delete a Comment from To Do Task Object
+        ///</summary>
+        // DELETE: api/ToDoTask/Comment/5
+        [Authorize(AuthenticationSchemes = "Identity.Application,Bearer")]
+        [HttpDelete("Comment/{id}")]
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+
+            var comment = await _context.Comments.FindAsync(id);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
 
         private bool ToDoTaskExists(int id)
         {

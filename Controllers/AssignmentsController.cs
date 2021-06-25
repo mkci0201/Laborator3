@@ -39,9 +39,9 @@ namespace Laborator3.Controllers
         ///</summary>
         // POST: api/Assignments
         [HttpPost]
-        public async Task<ActionResult> AssignTask(NewAssignment newTaskAssignment )
+        public async Task<ActionResult> AssignTask(NewAssignment newTaskAssignment)
         {
-            var user = await _userManager.FindByNameAsync(User.FindFirstValue(ClaimTypes.Email));
+            var user = await _userManager.FindByNameAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             List<ToDoTask> assignedTasks = new List<ToDoTask>();
             newTaskAssignment.AssignedToDoTaskIds.ForEach(pid =>
@@ -70,6 +70,7 @@ namespace Laborator3.Controllers
             return Ok();
         }
 
+
         ///<summary>
         ///Return all ToDo Task Objects and Assignment Objects for the logged user
         ///</summary>
@@ -77,13 +78,12 @@ namespace Laborator3.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.Email).Value);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            var result = _context.Assignments.Where(a => a.User.Id == user.Id).Include(a => a.ToDoTasks).Select(a => _mapper.Map<AssignmentsForUserResponse>(a));         
+            var result = _context.Assignments.Where(a => a.User.Id == user.Id).Include(a => a.ToDoTasks).Select(a => _mapper.Map<AssignmentsForUserResponse>(a));
 
             return Ok(result.ToList());
         }
-
 
         ///<summary>
         ///Update one Assignment Object
@@ -92,7 +92,7 @@ namespace Laborator3.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAssignment(int id, NewAssignment newAssignment)
         {
-            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.Email).Value);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value);
            
             if (!_context.Assignments.Any(a => (a.Id == id && a.User.Id == user.Id)))
             {    
@@ -139,6 +139,8 @@ namespace Laborator3.Controllers
             return Ok();
         }
 
+
+
         ///<summary>
         ///Delete an Assignment Object
         ///</summary>
@@ -147,7 +149,7 @@ namespace Laborator3.Controllers
         public async Task<IActionResult> DeleteAssignment(int id)
         {
 
-            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.Email).Value);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var assignment = await _context.Assignments.FindAsync(id);
 
             if (assignment == null || assignment.User.Id != user.Id)
